@@ -48,7 +48,7 @@
             run: flutter build apk --target-platform android-arm
             shell: bash
           - name: Package android build output (32-bit)
-            run: cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk Kazumi_android_${{ env:tag }}.apk
+            run: cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk Kazumi_android_${env:tag}.apk
             shell: bash
 
 
@@ -170,7 +170,7 @@
              mkdir build
              mkdir build/unsigned
              mkdir build/signed
-             cp android_outputs/Kazumi_android_${{ env:tag }}.apk build/unsigned/Kazumi_android_${{ env:tag }}.apk
+             cp android_outputs/Kazumi_android_${{ env:tag }}.apk build/unsigned/Kazumi_android_${env:tag}.apk
 
 
           - name: Download iOS build file
