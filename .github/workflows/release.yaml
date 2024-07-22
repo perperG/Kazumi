@@ -44,12 +44,13 @@
           - name: Get Flutter dependencies
             run: flutter pub get
             shell: bash
-          - name: Build Flutter for Android
-            run: flutter build apk --split-per-abi
+          - name: Build Flutter for Android (32-bit only)
+            run: flutter build apk --target-platform android-arm
             shell: bash
-          - name: Package android build output
-            run: cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk Kazumi_android_${env:tag}.apk
+          - name: Package android build output (32-bit)
+            run: cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk Kazumi_android_${{ env:tag }}.apk
             shell: bash
+
 
           - name: Upload android outputs
             uses: actions/upload-artifact@v4
@@ -164,12 +165,13 @@
               path: android_outputs 
           - name: List files in android_outputs directory
             run: ls -l android_outputs   
-          - name: Copy android build file to unsigned floder
+          - name: Copy android build file to unsigned folder
             run: | 
-              mkdir build
-              mkdir build/unsigned
-              mkdir build/signed
-              cp android_outputs/* build/unsigned/Kazumi_android_${{ env.tag }}.apk
+             mkdir build
+             mkdir build/unsigned
+             mkdir build/signed
+             cp android_outputs/Kazumi_android_${{ env:tag }}.apk build/unsigned/Kazumi_android_${{ env:tag }}.apk
+
 
           - name: Download iOS build file
             uses: actions/download-artifact@v4
