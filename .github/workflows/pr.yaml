@@ -4,51 +4,45 @@
     on:
       pull_request:
         types: [opened, synchronize, reopened]
-
+    
     jobs:
-    flutter-build-android:
-     name: "Release for android"
-    runs-on: "ubuntu-latest" 
-    permissions: write-all
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v4
-      - name: Extract tag name
-        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-        shell: bash
-      - name: Echo build progress
-        run: echo "Kazumi_android_${{ env.tag }}.apk build progress"
-        shell: bash
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang cmake libgtk-3-dev ninja-build libayatana-appindicator3-dev mpv libmpv-dev libasound2-dev
-        shell: bash
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'          
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version-file: pubspec.yaml
-      - name: Get Flutter dependencies
-        run: flutter pub get
-        shell: bash
-      - name: Build Flutter for Android (32-bit only)
-        run: flutter build apk --target-platform android-arm
-        shell: bash
-      - name: Package android build output (32-bit)
-        run: cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk Kazumi_android_${{ env.tag }}.apk
-        shell: bash
-      - name: Upload android outputs
-        uses: actions/upload-artifact@v4
-        with:
-          name: android_outputs
-          path: Kazumi_android_${{ env.tag }}.apk
+      flutter-build-android:
+        name: "Release for android"
+        runs-on: "ubuntu-latest" 
+        permissions: write-all
+        steps:
+          - name: Clone repository
+            uses: actions/checkout@v4
+          - name: Install dependencies
+            run: |
+              sudo apt-get update
+              sudo apt-get install -y clang cmake libgtk-3-dev ninja-build libayatana-appindicator3-dev libasound2-dev
+            shell: bash
+          - name: Set up JDK 17
+            uses: actions/setup-java@v3
+            with:
+              java-version: '17'
+              distribution: 'temurin'          
+          - name: Set up Flutter
+            uses: subosito/flutter-action@v2
+            with:
+              channel: stable
+              flutter-version-file: pubspec.yaml
+          - name: Get Flutter dependencies
+            run: flutter pub get
+            shell: bash
+          - name: Build Flutter for Android
+            run: flutter build apk --split-per-abi
+            shell: bash
+          - name: Package android build output
+            run: cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk Kazumi_android_canary.apk
+            shell: bash
 
+          - name: Upload android outputs
+            uses: actions/upload-artifact@v4
+            with:
+              name: android_outputs
+              path: Kazumi_android_*.apk
 
       flutter-build-windows:
         name: "Release for windows"
@@ -105,6 +99,11 @@
               mkdir Payload
               cp -R build/ios/iphoneos/Runner.app Payload/Runner.app
               zip -q -r Kazumi_ios_canary_no_sign.ipa Payload
+          - name: Upload iOS build
+            uses: actions/upload-artifact@v4
+            with:
+              name: ios_outputs
+              path: Kazumi_ios_*.ipa
           - name: Upload iOS build
             uses: actions/upload-artifact@v4
             with:
