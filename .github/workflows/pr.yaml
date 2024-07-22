@@ -4,10 +4,10 @@
     on:
       pull_request:
         types: [opened, synchronize, reopened]
-    
-jobs:
-  flutter-build-android:
-    name: "Release for android"
+
+    jobs:
+    flutter-build-android:
+     name: "Release for android"
     runs-on: "ubuntu-latest" 
     permissions: write-all
     steps:
