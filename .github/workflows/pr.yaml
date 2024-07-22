@@ -35,7 +35,7 @@
             run: flutter build apk --target-platform android-arm
             shell: bash
           - name: Package android build output (32-bit)
-            run: cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk Kazumi_android_${{ env:tag }}.apk
+            run: cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk Kazumi_android_${env:tag}.apk
             shell: bash
 
 
