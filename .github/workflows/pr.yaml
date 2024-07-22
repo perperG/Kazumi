@@ -31,13 +31,12 @@
           - name: Get Flutter dependencies
             run: flutter pub get
             shell: bash
-          - name: Build Flutter for Android (32-bit only)
-            run: flutter build apk --target-platform android-arm
+          - name: Build Flutter for Android
+            run: flutter build apk --split-per-abi
             shell: bash
-          - name: Package android build output (32-bit)
-            run: cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk Kazumi_android_${env:tag}.apk
+          - name: Package android build output
+            run: cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk Kazumi_android_canary.apk
             shell: bash
-
 
           - name: Upload android outputs
             uses: actions/upload-artifact@v4
@@ -100,11 +99,6 @@
               mkdir Payload
               cp -R build/ios/iphoneos/Runner.app Payload/Runner.app
               zip -q -r Kazumi_ios_canary_no_sign.ipa Payload
-          - name: Upload iOS build
-            uses: actions/upload-artifact@v4
-            with:
-              name: ios_outputs
-              path: Kazumi_ios_*.ipa
           - name: Upload iOS build
             uses: actions/upload-artifact@v4
             with:
